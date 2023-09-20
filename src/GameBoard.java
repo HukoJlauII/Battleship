@@ -235,6 +235,17 @@ public class GameBoard {
         }
     }
 
+    public boolean proceedAttack(Scanner scanner, GameBoard enemy, boolean isFirstPlayerAttack) {
+        if (isFirstPlayerAttack) {
+            System.out.println("Ход игрока 1");
+        } else {
+            System.out.println("Ход игрока 2");
+        }
+        boolean resultOfAttack = enemy.makeAttack(scanner);
+        if (resultOfAttack) {
+            return isFirstPlayerAttack;
+        } else return !isFirstPlayerAttack;
+    }
 
     public boolean isAllShipsSunk() {
         for (int i = 0; i < SIZE; i++) {
@@ -247,6 +258,27 @@ public class GameBoard {
         return true;
     }
 
+    public void initGame(Scanner scanner, int i) {
+        this.printBoard();
+        System.out.println("Выберите расстановку игрока" + i + " :");
+        this.placeShips(scanner);
+    }
 
-
+    public static void startGame(GameBoard player1, GameBoard player2, Scanner scanner) {
+        boolean isFirstPlayerAttack = true;
+        while (!player1.isAllShipsSunk() && !player2.isAllShipsSunk()) {
+            if (isFirstPlayerAttack) {
+                isFirstPlayerAttack = player1.proceedAttack(scanner, player2, isFirstPlayerAttack);
+                if (player2.isAllShipsSunk()) {
+                    System.out.println("Первый игрок победил");
+                }
+            } else {
+                isFirstPlayerAttack = player2.proceedAttack(scanner, player1, isFirstPlayerAttack);
+                if (player1.isAllShipsSunk()) {
+                    System.out.println("Первый игрок победил");
+                }
+                System.out.println("Второй игрок победил");
+            }
+        }
+    }
 }
